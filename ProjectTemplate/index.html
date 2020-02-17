@@ -2,9 +2,10 @@
 <html>
 <head>
 	<meta charset="utf-8" />
-	<title></title>
+	<title>ASU Library</title>
 	<!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="ASUstyle.css">
 
 	<!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
 	<script type="text/javascript">
@@ -55,18 +56,23 @@
         } 
 	</script>
 	<!--END OF YOUR OWN JAVASCRIPT-->
-
-	<!--AND YOUR OWN CSS CAN GO HERE AS WELL-->
-	<style>
-
-	</style>
-	<!--END OF YOUR OWN CSS-->
 </head >
 <body>
-	<button onclick="javascript: TestButtonHandler();">Click here to test connection!</button>
-    <button onclick="javascript: LoadBooks();">Click here to load books</button>
-    <ul id="booklist">
-
-    </ul>
+    <div><h1 id="titleID">ASU Library</h1></div>
+    <div class="topnav">
+        <a class="active" href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <input type="text" placeholder="Search..">
+    </div>
+    <div id="booksID">
+        <button onclick="javascript: LoadBooks();">Load Books</button>
+        <ul id="booklist"></ul>
+    </div>
+    <div id="buttonsID">
+        <button class="buttons">Check In</button>
+        <button class="buttons">Check Out</button>
+    </div>
+    
 </body>
 </html >
