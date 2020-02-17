@@ -28,7 +28,6 @@
 				}
 			});
         }
-
         function LoadBooks() {
             var webMethod = "ProjectServices.asmx/LoadBooks";
             var parameters = "{}";
@@ -41,15 +40,19 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (array) {
-                    for (i = 0; i < array.length; i++) {
-                        console.log(array[i]);
+                    var books = array.d;
+                    var stmt = '';
+                    for (var i = 0; i < books.length; i++) {
+                        stmt = stmt + "<li>" + books[i].isbn + " -- " + books[i].title
+                            + " by " + books[i].author + " -- Remaining:  " + books[i].quantity + "</li>"
                     }
+                    document.getElementById("booklist").innerHTML = stmt;
                 },
                 error: function (e) {
                     alert("error");
                 }
             });
-        }
+        } 
 	</script>
 	<!--END OF YOUR OWN JAVASCRIPT-->
 
@@ -62,5 +65,8 @@
 <body>
 	<button onclick="javascript: TestButtonHandler();">Click here to test connection!</button>
     <button onclick="javascript: LoadBooks();">Click here to load books</button>
+    <ul id="booklist">
+
+    </ul>
 </body>
 </html >
