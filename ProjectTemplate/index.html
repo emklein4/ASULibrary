@@ -27,7 +27,29 @@
 					alert("this code will only execute if javascript is unable to access the webservice");
 				}
 			});
-		}
+        }
+
+        function LoadBooks() {
+            var webMethod = "ProjectServices.asmx/LoadBooks";
+            var parameters = "{}";
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (array) {
+                    for (i = 0; i < array.length; i++) {
+                        console.log(array[i]);
+                    }
+                },
+                error: function (e) {
+                    alert("error");
+                }
+            });
+        }
 	</script>
 	<!--END OF YOUR OWN JAVASCRIPT-->
 
@@ -39,5 +61,6 @@
 </head >
 <body>
 	<button onclick="javascript: TestButtonHandler();">Click here to test connection!</button>
+    <button onclick="javascript: LoadBooks();">Click here to load books</button>
 </body>
 </html >
