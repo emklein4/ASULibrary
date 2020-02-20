@@ -94,7 +94,8 @@ namespace ProjectTemplate
                         isbn = sqlDt.Rows[i]["ISBN"].ToString(),
                         title = sqlDt.Rows[i]["Title"].ToString(),
                         author = sqlDt.Rows[i]["Author"].ToString(),
-                        quantity = Convert.ToInt32(sqlDt.Rows[i]["Quantity"])
+                        quantity = Convert.ToInt32(sqlDt.Rows[i]["Quantity"]),
+                        rentalDays = Convert.ToInt32(sqlDt.Rows[i]["DaysOut"])
                     });
                 }
                 //convert the list of accounts to an array and return!

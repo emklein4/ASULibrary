@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="ASUstyle.css">
 
 	<!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
-	<script type="text/javascript">
+	<script type="text/javascript"> 
+        var books;
 		
         function LoadBooks() {
             var webMethod = "ProjectServices.asmx/LoadBooks";
@@ -22,11 +23,11 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (array) {
-                    var books = array.d;
+                    books = array.d;
                     var stmt = '';
                     for (var i = 0; i < books.length; i++) {
-                        stmt = stmt + "<li>" + books[i].isbn + " -- " + books[i].title
-                            + " by " + books[i].author + " -- Remaining:  " + books[i].quantity + "</li>"
+                        stmt = stmt + "<input type='radio' name='book' value='" + books[i].isbn + "'>" + "<label for='" + books[i].isbn + "'>" +
+                            books[i].title + " by " + books[i].author + " -- Remaining:  " + books[i].quantity + "<label><br>";
                     }
                     document.getElementById("booklist").innerHTML = stmt;
                 },
@@ -35,6 +36,53 @@
                 }
             });
         } 
+
+        function CheckoutBook() {
+        var title, isbn, days;
+        var radios = document.getElementsByName('book');
+
+        for (var i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].checked) {
+                var quan = books[i].quantity;
+                if (quan < 1) {
+                    return alert("No books left!");
+                    break;
+                }
+                else {
+                    isbn = radios[i].value;
+                    title = books[i].title;
+                    days = books[i].rentalDays;
+                }
+
+                // only one radio can be logically checked, don't check the rest
+                break;
+            }
+        }
+            var id = 3; //waiting on global ID but until then here is a placeholder
+
+            var webMethod = "ProjectServices.asmx/CheckoutBook";
+            var parameters = "{\"ID\":\"" + encodeURI(id) + "\", \"ISBN\":\"" +
+                             encodeURI(isbn) + "\", \"daysOut\":\"" + encodeURI(days) + "\"}";
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function () {
+                    alert("Sucessfully checked out book: " + title);
+                    location.reload();
+                    }
+                ,
+                error: function (e) {
+                    alert("error");
+                }
+            });
+        } 
+        window.onload = LoadBooks();
+
 	</script>
 	<!--END OF YOUR OWN JAVASCRIPT-->
 </head >
@@ -47,12 +95,11 @@
         <input type="text" placeholder="Search..">
     </div>
     <div id="booksID">
-        <button onclick="javascript: LoadBooks();">Load Books</button>
         <ul id="booklist"></ul>
     </div>
     <div id="buttonsID">
         <button class="buttons">Check In</button>
-        <button class="buttons">Check Out</button>
+        <button class="buttons" onclick="CheckoutBook()">Check Out</button>
     </div>
     
 </body>

@@ -6,5 +6,6 @@
         public string title;
         public string author;
         public int quantity;
+        public int rentalDays;
     }
 }
