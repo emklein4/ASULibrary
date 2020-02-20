@@ -62,7 +62,7 @@ namespace ProjectTemplate
 				return "Something went wrong, please check your credentials and db name and try again.  Error: "+e.Message;
 			}
 		}
-        [WebMethod]
+        [WebMethod(EnableSession = true)]
             public Book[] LoadBooks()
             {
                 //check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
@@ -101,7 +101,40 @@ namespace ProjectTemplate
                 return accounts.ToArray();
             }
 
-	}
+        [WebMethod]
+        public void CheckoutBook(string ID, string ISBN, double daysOut)
+        {
+            //the only thing fancy about this query is SELECT LAST_INSERT_ID() at the end.  All that
+            //does is tell mySql server to return the primary key of the last inserted row.
+            string sqlSelect = "insert into userbooks (ID, ISBN, returndate, checkoutdate) " +
+                "values(@idValue, @ISBNValue, @returndateValue, @checkoutdateValue);";
+
+            MySqlConnection sqlConnection = new MySqlConnection(getConString());
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(ID));
+            sqlCommand.Parameters.AddWithValue("@ISBNValue", HttpUtility.UrlDecode(ISBN));
+            sqlCommand.Parameters.AddWithValue("@checkoutdateValue", DateTime.UtcNow.AddDays(0));
+            sqlCommand.Parameters.AddWithValue("@returndateValue", DateTime.UtcNow.AddDays(daysOut));
+
+            //this time, we're not using a data adapter to fill a data table.  We're just
+            //opening the connection, telling our command to "executescalar" which says basically
+            //execute the query and just hand me back the number the query returns (the ID, remember?).
+            //don't forget to close the connection!
+            sqlConnection.Open();
+            //we're using a try/catch so that if the query errors out we can handle it gracefully
+            //by closing the connection and moving on
+            try
+            {
+                sqlCommand.ExecuteScalar();
+            }
+            catch (Exception e)
+            {
+            }
+            sqlConnection.Close();
+        }
+
+    }
 
     
 }
