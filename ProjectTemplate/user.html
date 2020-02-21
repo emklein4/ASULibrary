@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>User Page</title>
+    <link rel="stylesheet" href="ASUstyle.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        function LoadUser() {
+            var id = 3;
+            var webMethod = "ProjectServices.asmx/LoadUser";
+            var parameters = "{\"ID\":\"" + encodeURI(id) + "\"}";
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (user) {
+                    var activeUser = user.d;
+                    alert("Welcome, " + activeUser.name);
+                    var stmt = "<tr> <th> Book</th> <th>Return Date</th>"
+                    for (var i = 0; i < activeUser.books.length; i++) {
+                        stmt = stmt + "<tr><td>" + activeUser.books[i].title +
+                            "</td><td>" + activeUser.books[i].returndate.slice(0, 8) + "</td></tr>"
+                    }
+                    document.getElementById("booktable").innerHTML = stmt;
+
+                },
+                error: function (e) {
+                    alert("error");
+                }
+            });
+        }
+
+        window.onload = LoadUser();
+    </script>
+</head>
+<body>
+    <div><h1 id="titleID">ASU Library</h1></div>
+    <div class="topnav">
+        <a class="active" href="index.html">Home</a>
+        <a href="user.html">User Page</a>
+        <a href="#contact">Contact</a>
+        <input type="text" placeholder="Search..">
+    </div>
+    <h1>Your Books</h1>
+    <table id="booktable">
+        <tr>
+            <th>Book</th>
+            <th>Return Date</th>
+        </tr>
+    </table>
+</body>
+</html>
