@@ -180,15 +180,9 @@ namespace ProjectTemplate
 
         }
 
-        [WebMethod(EnableSession = true)]
+        [WebMethod]
         public User LoadUser(string ID)
         {
-            //check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
-            //just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
-            //sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
-            //Keeps everything simple.
-
-            //LOGIC: get all the active accounts and return them!
 
             DataTable sqlDt = new DataTable("user");
             string sqlSelect = "select f_name " +
