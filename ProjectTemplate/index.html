@@ -81,6 +81,8 @@
                 }
             });
         } 
+
+
         window.onload = LoadBooks();
 
 	</script>
@@ -97,10 +99,12 @@
     <div id="booksID">
         <ul id="booklist"></ul>
     </div>
-    <div id="buttonsID">
-        <button class="buttons">Check In</button>
-        <button class="buttons" onclick="CheckoutBook()">Check Out</button>
-    </div>
-    
+            <label for="uname">Username</label>
+            <input type="text" placeholder="Enter Username" name="uname">
+            <div id="buttonsID">
+                <button class="buttons">Check In</button>
+                <button class="buttons" onclick="CheckoutBook()">Check Out</button>
+            </div>
+
 </body>
 </html >
