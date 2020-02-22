@@ -10,6 +10,7 @@
 	<!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
 	<script type="text/javascript"> 
         var books;
+        var activeID;
 		
         function LoadBooks() {
             var webMethod = "ProjectServices.asmx/LoadBooks";
@@ -40,6 +41,7 @@
         function CheckoutBook() {
         var title, isbn, days;
         var radios = document.getElementsByName('book');
+        var id = activeID; //use global ID from session
 
         for (var i = 0, length = radios.length; i < length; i++) {
             if (radios[i].checked) {
@@ -48,6 +50,10 @@
                     return alert("No books left!");
                     break;
                 }
+                /*else if (id = null) {
+                    return alert("Not logged in!")
+                    break;
+                }*/
                 else {
                     isbn = radios[i].value;
                     title = books[i].title;
@@ -58,7 +64,7 @@
                 break;
             }
         }
-            var id = 3; //waiting on global ID but until then here is a placeholder
+           
 
             var webMethod = "ProjectServices.asmx/CheckoutBook";
             var parameters = "{\"ID\":\"" + encodeURI(id) + "\", \"ISBN\":\"" +
@@ -82,6 +88,88 @@
             });
         } 
 
+        function LogOn(userId, pass) {
+            //the url of the webservice we will be talking to
+            var webMethod = "ProjectServices.asmx/LogOn";
+            //the parameters we will pass the service (in json format because curly braces)
+            //note we encode the values for transmission over the web.  All the \'s are just
+            //because we want to wrap our keynames and values in double quotes so we have to
+            //escape the double quotes (because the overall string we're creating is in double quotes!)
+            var parameters = "{\"uid\":\"" + encodeURI(userId) + "\",\"pass\":\"" + encodeURI(pass) + "\"}";
+
+            //jQuery ajax method
+            $.ajax({
+                //post is more secure than get, and allows
+                //us to send big data if we want.  really just
+                //depends on the way the service you're talking to is set up, though
+                type: "POST",
+                //the url is set to the string we created above
+                url: webMethod,
+                //same with the data
+                data: parameters,
+                //these next two key/value pairs say we intend to talk in JSON format
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                //jQuery sends the data and asynchronously waits for a response.  when it
+                //gets a response, it calls the function mapped to the success key here
+                success: function (id) {
+                    if (id.d) {
+                        //server replied true
+                        activeID = id.d;
+                        alert("Logged in!");
+                        LoadUser();
+
+                    }
+                    else {
+                        //server replied false, so let the user know
+                        //the logon failed
+                        alert("logon failed");
+                    }
+                },
+                error: function (e) {
+                    //if something goes wrong in the mechanics of delivering the
+                    //message to the server or the server processing that message,
+                    //then this function mapped to the error key is executed rather
+                    //than the one mapped to the success key.  This is just a garbage
+                    //alert because I'm lazy
+                    alert("boo...");
+                }
+            });
+        }
+
+        function LoadUser() {
+            var id = activeID;
+            var webMethod = "ProjectServices.asmx/LoadUser";
+            var parameters = "{\"ID\":\"" + encodeURI(id) + "\"}";
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (user) {
+                    var activeUser = user.d;
+                    alert("Welcome, " + activeUser.name);
+                    var stmt = "<h1>Your Books</h1><table id = 'booktable'><tr> <th> Book</th> <th>Return Date</th>"
+                    for (var i = 0; i < activeUser.books.length; i++) {
+                        stmt = stmt + "<tr><td>" + activeUser.books[i].title +
+                            "</td><td>" + activeUser.books[i].returndate.slice(0, 8) + "</td></tr>"
+                    }
+                    stmt = stmt + "</table>";
+                    document.getElementById("rentedbooks").innerHTML = stmt;
+
+                },
+                error: function (e) {
+                    alert("error");
+                }
+            });
+        }
+
+
+
+
 
         window.onload = LoadBooks();
 
@@ -99,12 +187,23 @@
     <div id="booksID">
         <ul id="booklist"></ul>
     </div>
-            <label for="uname">Username</label>
-            <input type="text" placeholder="Enter Username" name="uname">
-            <div id="buttonsID">
-                <button class="buttons">Check In</button>
-                <button class="buttons" onclick="CheckoutBook()">Check Out</button>
-            </div>
+    <div class="container">
+        <label for="uname"><b>Username</b></label>
+        <input type="text" placeholder="Enter Username" id="uname" required>
+
+        <label for="psw"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" id="psw" required>
+
+        <button type="submit" onclick="LogOn(getElementById('uname').value, getElementById('psw').value)">Login</button>
+        <div id="rentedbooks">
+
+        </div>
+
+        <div id="buttonsID">
+            <button class="buttons">Check In</button>
+            <button class="buttons" onclick="CheckoutBook()">Check Out</button>
+        </div>
+        </div>
 
 </body>
 </html >
