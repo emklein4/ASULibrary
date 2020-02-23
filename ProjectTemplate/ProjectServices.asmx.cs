@@ -253,6 +253,42 @@ namespace ProjectTemplate
 
         }
 
+        [WebMethod(EnableSession = true)]
+        public void AddNewBook(string ISBN, string title, string author, string quantity)
+        {
+
+            //the only thing fancy about this query is SELECT LAST_INSERT_ID() at the end.  All that
+            //does is tell mySql server to return the primary key of the last inserted row.
+            string sqlSelect = "insert into Books (ISBN, title, author, quantity) " +
+                "values(@ISBNValue, @titleValue, @authorValue, @quantityValue); SELECT_LAST_INSERT_ID();";
+
+            MySqlConnection sqlConnection = new MySqlConnection(getConString());
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            sqlCommand.Parameters.AddWithValue("@ISBNValue", HttpUtility.UrlDecode(ISBN));
+            sqlCommand.Parameters.AddWithValue("@titleValue", HttpUtility.UrlDecode(title));
+            sqlCommand.Parameters.AddWithValue("@authorValue", HttpUtility.UrlDecode(author));
+            sqlCommand.Parameters.AddWithValue("@quantityValue", HttpUtility.UrlDecode(quantity));
+
+
+            //this time, we're not using a data adapter to fill a data table.  We're just
+            //opening the connection, telling our command to "executescalar" which says basically
+            //execute the query and just hand me back the number the query returns (the ID, remember?).
+            //don't forget to close the connection!
+            sqlConnection.Open();
+            //we're using a try/catch so that if the query errors out we can handle it gracefully
+            //by closing the connection and moving on
+            try
+            {
+                sqlCommand.ExecuteScalar();
+                int accountID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+            }
+            catch (Exception e)
+            {
+            }
+            sqlConnection.Close();
+        }
+
 
     }
 }
