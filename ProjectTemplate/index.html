@@ -79,7 +79,9 @@
                 dataType: "json",
                 success: function () {
                     alert("Sucessfully checked out book: " + title);
-                    location.reload();
+                    LoadBooks();
+                    LoadUser();
+
                     }
                 ,
                 error: function (e) {
@@ -152,11 +154,10 @@
                 dataType: "json",
                 success: function (user) {
                     var activeUser = user.d;
-                    alert("Welcome, " + activeUser.name);
-                    var stmt = "<h1>Your Books</h1><table id = 'booktable'><tr> <th> Book</th> <th>Return Date</th>"
+                    var stmt = "<h1>" + activeUser.name + "'s Books</h1><table id = 'booktable'><tr> <th> Book</th> <th>Return Date</th>"
                     for (var i = 0; i < activeUser.books.length; i++) {
                         stmt = stmt + "<tr><td>" + activeUser.books[i].title +
-                            "</td><td>" + activeUser.books[i].returndate.slice(0, 8) + "</td></tr>"
+                            "</td><td>" + activeUser.books[i].returndate.replace("12:00:00 AM", "") + "</td></tr>"
                     }
                     stmt = stmt + "</table>";
                     document.getElementById("rentedbooks").innerHTML = stmt;
