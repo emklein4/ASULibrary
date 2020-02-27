@@ -78,7 +78,7 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function () {
-                    alert("Sucessfully checked out book: " + title);
+                    alert("Sucessfully checked out book!");
                     LoadBooks();
                     LoadUser();
 
@@ -154,9 +154,9 @@
                 dataType: "json",
                 success: function (user) {
                     var activeUser = user.d;
-                    var stmt = "<h1>" + activeUser.name + "'s Books</h1><table id = 'booktable'><tr> <th> Book</th> <th>Return Date</th>"
+                    var stmt = "<h1>" + activeUser.name + "'s Books</h1><table id = 'booktable'><tr><th></th> <th> Book</th> <th>Return Date</th>"
                     for (var i = 0; i < activeUser.books.length; i++) {
-                        stmt = stmt + "<tr><td>" + activeUser.books[i].title +
+                        stmt = stmt + "<tr><td><input type='checkbox' class='returnSelection' value='" + activeUser.books[i].isbn + "'></td><td>" + activeUser.books[i].title +
                             "</td><td>" + activeUser.books[i].returndate.replace("12:00:00 AM", "") + "</td></tr>"
                     }
                     stmt = stmt + "</table>";
@@ -169,6 +169,65 @@
             });
         }
 
+        function LoadSearch(search) {
+            var webMethod = "ProjectServices.asmx/SearchBooks";
+            var parameters = "{\"search\":\"" + encodeURI(search) + "\"}";
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (array) {
+                    var searchbooks = array.d;
+                    var stmt = '<h3>Search Results</h3>';
+                    for (var i = 0; i < searchbooks.length; i++) {
+                        stmt = stmt + "<input type='radio' name='book' value='" + searchbooks[i].isbn + "'>" + "<label for='" + searchbooks[i].isbn + "'>" +
+                            searchbooks[i].title + " by " + searchbooks[i].author + "<label><br>";
+                    }
+                    document.getElementById("searchResults").innerHTML = stmt;
+                },
+                error: function (e) {
+                    alert("error");
+                }
+            });
+        } 
+
+        function CheckInBook() {
+            var selections = document.getElementsByClassName('returnSelection');
+            var id = activeID; //use global ID from session
+
+            for (var i = 0, length = selections.length; i < length; i++) {
+                if (selections[i].checked) {
+                    var webMethod = "ProjectServices.asmx/CheckInBook";
+                    var parameters = "{\"ID\":\"" + encodeURI(id) + "\", \"ISBN\":\"" +
+                        encodeURI(selections[i].value) + "\"}";
+
+                    //jQuery ajax method
+                    $.ajax({
+                        type: "POST",
+                        url: webMethod,
+                        data: parameters,
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function () {
+                            alert("Sucessfully checked in book");
+                            LoadBooks();
+                            LoadUser();
+
+                        }
+                        ,
+                        error: function (e) {
+                            alert("error");
+                        }
+                    });
+                }
+            }
+ 
+        } 
+
 
 	</script>
 	<!--END OF YOUR OWN JAVASCRIPT-->
@@ -179,7 +238,10 @@
         <a class="active" href="#home">Home</a>
         <a href="user.html">User Page</a>
         <a href="#contact">Contact</a>
-        <input type="text" placeholder="Search..">
+        <input type="text" id="searchbar" placeholder="Search.." onkeypress="LoadSearch(getElementById('searchbar').value)">
+    </div>
+    <div id="searchResults" style="float: right;">
+
     </div>
     <div id="booksID">
         <ul id="booklist"></ul>
@@ -197,7 +259,7 @@
         </div>
 
         <div id="buttonsID">
-            <button class="buttons">Check In</button>
+            <button class="buttons" onclick="CheckInBook()">Check In</button>
             <button class="buttons" onclick="CheckoutBook()">Check Out</button>
         </div>
         </div>
