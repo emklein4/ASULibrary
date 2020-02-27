@@ -178,6 +178,32 @@ namespace ProjectTemplate
             sqlConnection.Close();
         }
 
+        [WebMethod]
+        public void CheckInBook(string ID, string ISBN)
+        {
+            string sqlSelect = "delete from userbooks" +
+                " where ID = " + ID + " and ISBN = " + ISBN + ";";
+
+            MySqlConnection sqlConnection = new MySqlConnection(getConString());
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            //this time, we're not using a data adapter to fill a data table.  We're just
+            //opening the connection, telling our command to "executescalar" which says basically
+            //execute the query and just hand me back the number the query returns (the ID, remember?).
+            //don't forget to close the connection!
+            sqlConnection.Open();
+            //we're using a try/catch so that if the query errors out we can handle it gracefully
+            //by closing the connection and moving on
+            try
+            {
+                sqlCommand.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+            }
+            sqlConnection.Close();
+        }
+
         [WebMethod(EnableSession = true)]
         public UserBook[] LoadUserBooks(string ID)
         {
@@ -289,6 +315,7 @@ namespace ProjectTemplate
             sqlConnection.Close();
         }
 
+        [WebMethod]
         public Book[] SearchBooks(string search)
         {
             //check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
@@ -300,13 +327,12 @@ namespace ProjectTemplate
 
             DataTable sqlDt = new DataTable("books");
             string sqlSelect = "select * from Books" +
-                " where title = '%@value%' or" +
-                " where author = '%@value%";
+                " where Title like '%" + search + "%' or" +
+                " Author like '%@" + search + "%';";
 
             MySqlConnection sqlConnection = new MySqlConnection(getConString());
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-            sqlCommand.Parameters.AddWithValue("@value", HttpUtility.UrlDecode(search));
 
             //gonna use this to fill a data table
             MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
