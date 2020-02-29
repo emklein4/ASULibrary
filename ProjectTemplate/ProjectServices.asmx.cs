@@ -60,7 +60,7 @@ namespace ProjectTemplate
             }
             catch (Exception e)
             {
-                return "Something went wrong, please check your credentials and db name and try again.  Error: " + e.Message;
+                return "Something went wrong, please check your credentials and db f_name and try again.  Error: " + e.Message;
             }
         }
 
@@ -99,8 +99,10 @@ namespace ProjectTemplate
                 //if we found an account, store the id and admin status in the session
                 //so we can check those values later on other method calls to see if they 
                 //are 1) logged in at all, and 2) and admin or not
+              
                 string accountID = sqlDt.Rows[0]["id"].ToString();
                 Session["admin"] = sqlDt.Rows[0]["admin"];
+                Session["id"] = sqlDt.Rows[0]["id"];
                 return accountID;
 
             }
@@ -147,6 +149,68 @@ namespace ProjectTemplate
             return accounts.ToArray();
         }
 
+        //EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
+        [WebMethod(EnableSession = true)]
+        public User[] GetAccounts()
+        {
+            //check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
+            //just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
+            //sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
+            //Keeps everything simple.
+
+            //WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
+            if (Session["id"] != null)
+            {
+                DataTable sqlDt = new DataTable("accounts");
+
+                string sqlSelect = "select username, pass, f_name, l_name, from Users order by lastname";
+
+                MySqlConnection sqlConnection = new MySqlConnection(getConString());
+                MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+                //gonna use this to fill a data table
+                MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+                //filling the data table
+                sqlDa.Fill(sqlDt);
+
+                //loop through each row in the dataset, creating instances
+                //of our container class Account.  Fill each acciount with
+                //data from the rows, then dump them in a list.
+                List<User> accounts = new List<User>();
+                for (int i = 0; i < sqlDt.Rows.Count; i++)
+                {
+                    //only share user id and pass info with admins!
+                    if (Convert.ToInt32(Session["admin"]) == 1)
+                    {
+                        accounts.Add(new User
+                        {
+                            username = sqlDt.Rows[i]["username"].ToString(),
+                            pass = sqlDt.Rows[i]["pass"].ToString(),
+                            f_name = sqlDt.Rows[i]["f_name"].ToString(),
+                            l_name = sqlDt.Rows[i]["l_name"].ToString(),
+                        
+                        });
+                    }
+                    else
+                    {
+                        accounts.Add(new User
+                        {
+                            
+                            f_name = sqlDt.Rows[i]["f_name"].ToString(),
+                            l_name = sqlDt.Rows[i]["l_name"].ToString(),
+               
+                        });
+                    }
+                }
+                //convert the list of accounts to an array and return!
+                return accounts.ToArray();
+            }
+            else
+            {
+                //if they're not logged in, return an empty array
+                return new User[0];
+            }
+        }
         [WebMethod]
         public void CheckoutBook(string ID, string ISBN, double daysOut)
         {
@@ -255,7 +319,7 @@ namespace ProjectTemplate
         {
 
             DataTable sqlDt = new DataTable("user");
-            string sqlSelect = "select f_name " +
+            string sqlSelect = "select f_name " + "select l_name" + "select username" + "select pass" +
                 "from Users " +
                 "where ID = @IDvalue";
 
@@ -271,7 +335,10 @@ namespace ProjectTemplate
             User activeUser = new User
             {
                 id = ID,
-                name = sqlDt.Rows[0]["f_name"].ToString(),
+                f_name = sqlDt.Rows[0]["f_name"].ToString(),
+                l_name = sqlDt.Rows[0]["l_name"].ToString(),
+                username = sqlDt.Rows[0]["username"].ToString(),
+                pass = sqlDt.Rows[0]["pass"].ToString(),
                 books = LoadUserBooks(ID)
             };
             //convert the list of accounts to an array and return!

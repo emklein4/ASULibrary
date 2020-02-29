@@ -140,10 +140,116 @@
             });
         }
 
+        //when we retrieve accounts, we'll put them here
+        //so that we can reference them later for admins
+        //that may want to edit accounts
+        var accountsArray;
+
+        //to begin with, we assume that the account is not an admin
+        var admin = false;
+
+        //this function grabs accounts and loads our account window
+        function LoadAccounts(ISBN, title, author, quantity) {
+
+            var webMethod = "ProjectServices.asmx/GetAccounts";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.d.length > 0) {
+                        //let's put our accounts that we get from the
+                        //server into our accountsArray variable
+                        //so we can use them in other functions as well
+                        accountsArray = msg.d;
+                        //this clears out the div that will hold our account info
+                        $("#accountsBox").empty();
+                        //again, we assume we're not an admin unless we see data from the server
+                        //that we know only admins can see
+                        admin = false;
+
+
+                        for (var i = 0; i < accountsArray.length; i++) {
+                            //we grab on to a specific html element in jQuery
+                            //by using a  # followed by that element's id.
+                            var acct;
+                            //if they have access to admin-level info (like userid and password) then
+                            //create output that has an edit option
+                            if (accountsArray[i].id != null) {
+                                acct = "<div class='accountRow' id='acct" + accountsArray[i].id + "'>" + "<p>" + " "
+                                    + accountsArray[i].username + " " + accountsArray[i].pass + " " +
+                                    accountsArray[i].f_name + " " + accountsArray[i].l_name + "</p>"
+                                console.log(accountsArray[i].username)
+                                admin = true;
+                            }
+                            //if not, then they're not an admin so don't include the edit option
+                            else {
+                                acct = "<div class='accountRow' id='acct" + accountsArray[i].id + "'>"
+                                "</a></div><hr>"
+
+                            }
+                            $("#accountsBox").append(
+                                //anything we throw at our panel in the form of text
+                                //will be added to the contents of that panel.  Here
+                                //we're putting together a div that holds info on the
+                                //account as well as an edit link if the user is an admin
+                                acct
+                            );
+                        }
+
+                    }
+
+                },
+                error: function (e) {
+                    alert("boo...");
+                }
+            });
+            var webMethod = "ProjectServices.asmx/AddNewBook";
+            var parameters = "{\"ISBN\":\"" + encodeURI(ISBN) + "\", \"title\":\"" +
+                encodeURI(title) + "\", \"author\":\"" + encodeURI(author) + "\", \"quantity\":\"" + encodeURI(quantity) + "\"}";
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function () {
+
+                    if (admin = true) {
+                        addNew = "<div class='accountRow' id='acct'>" + " " +
+                            "<input type='text' placeholder='ISBN #...' id='isbnID' required>" + " " +
+                            "<input type='text' placeholder='Title...' id='titleID' required>" + " " +
+                            "<input type='text' placeholder='Author...' id='authorID' required>" + " " +
+                            "<input type='text' placeholder='Quantity...' id='quantityID' required>" + " " +
+                            "<button class='addNew' onclick='AddNewBook(getElementById('isbnID').value, getElementById('titleID').value, getElementById('authorID').value, getElementById('quantityID').value)'>Add Book</button>" +
+                            "</div>"
+                    }
+                    else {
+                        alert("Not an Admin");
+                    }
+
+                    $("#accountsBox").append(
+                        //anything we throw at our panel in the form of text
+                        //will be added to the contents of that panel.  Here
+                        //we're putting together a div that holds info on the
+                        //account as well as an edit link if the user is an admin
+                        addNew
+                    );
+
+                },
+                error: function (e) {
+                    alert("error");
+                }
+            });
+        }
+
         function LoadUser() {
             var id = activeID;
             var webMethod = "ProjectServices.asmx/LoadUser";
-            var parameters = "{\"ID\":\"" + encodeURI(id) + "\"}";
+            var parameters = "{\"id\":\"" + encodeURI(id) + "\"}";
 
             //jQuery ajax method
             $.ajax({
@@ -154,7 +260,7 @@
                 dataType: "json",
                 success: function (user) {
                     var activeUser = user.d;
-                    var stmt = "<h1>" + activeUser.name + "'s Books</h1><table id = 'booktable'><tr><th></th> <th> Book</th> <th>Return Date</th>"
+                    var stmt = "<h1>" + activeUser.f_name + "'s Books</h1><table id = 'booktable'><tr><th></th> <th> Book</th> <th>Return Date</th>"
                     for (var i = 0; i < activeUser.books.length; i++) {
                         stmt = stmt + "<tr><td><input type='checkbox' class='returnSelection' value='" + activeUser.books[i].isbn + "'></td><td>" + activeUser.books[i].title +
                             "</td><td>" + activeUser.books[i].returndate.replace("12:00:00 AM", "") + "</td></tr>"
@@ -257,12 +363,13 @@
         <div id="rentedbooks">
 
         </div>
+        <button onclick="LoadAccounts()">Admin Only</button>
 
         <div id="buttonsID">
             <button class="buttons" onclick="CheckInBook()">Check In</button>
             <button class="buttons" onclick="CheckoutBook()">Check Out</button>
         </div>
-        </div>
+    </div>
 
 </body>
 </html >
