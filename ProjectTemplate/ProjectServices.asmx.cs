@@ -163,7 +163,7 @@ namespace ProjectTemplate
             {
                 DataTable sqlDt = new DataTable("accounts");
 
-                string sqlSelect = "select username, pass, f_name, l_name, from Users order by lastname";
+                string sqlSelect = "select username, pass, f_name, l_name from Users order by l_name";
 
                 MySqlConnection sqlConnection = new MySqlConnection(getConString());
                 MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
@@ -319,7 +319,7 @@ namespace ProjectTemplate
         {
 
             DataTable sqlDt = new DataTable("user");
-            string sqlSelect = "select f_name " + "select l_name" + "select username" + "select pass" +
+            string sqlSelect = "select * " +
                 "from Users " +
                 "where ID = @IDvalue";
 

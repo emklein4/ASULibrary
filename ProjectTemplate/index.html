@@ -248,8 +248,9 @@
 
         function LoadUser() {
             var id = activeID;
+            console.log(id);
             var webMethod = "ProjectServices.asmx/LoadUser";
-            var parameters = "{\"id\":\"" + encodeURI(id) + "\"}";
+            var parameters = "{\"ID\":\"" + encodeURI(id) + "\"}";
 
             //jQuery ajax method
             $.ajax({
@@ -270,7 +271,8 @@
 
                 },
                 error: function (e) {
-                    alert("error");
+                    console.log(e.responseText);
+                    alert("load user error");
                 }
             });
         }
