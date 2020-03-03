@@ -163,7 +163,7 @@ namespace ProjectTemplate
             {
                 DataTable sqlDt = new DataTable("accounts");
 
-                string sqlSelect = "select username, pass, f_name, l_name from Users order by l_name";
+                string sqlSelect = "select ID, username, pass, f_name, l_name from Users order by l_name";
 
                 MySqlConnection sqlConnection = new MySqlConnection(getConString());
                 MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
@@ -184,6 +184,7 @@ namespace ProjectTemplate
                     {
                         accounts.Add(new User
                         {
+                            id = sqlDt.Rows[i]["ID"].ToString(),
                             username = sqlDt.Rows[i]["username"].ToString(),
                             pass = sqlDt.Rows[i]["pass"].ToString(),
                             f_name = sqlDt.Rows[i]["f_name"].ToString(),
@@ -353,7 +354,7 @@ namespace ProjectTemplate
             //the only thing fancy about this query is SELECT LAST_INSERT_ID() at the end.  All that
             //does is tell mySql server to return the primary key of the last inserted row.
             string sqlSelect = "insert into Books (ISBN, title, author, quantity) " +
-                "values(@ISBNValue, @titleValue, @authorValue, @quantityValue); SELECT_LAST_INSERT_ID();";
+                "values(@ISBNValue, @titleValue, @authorValue, @quantityValue);";
 
             MySqlConnection sqlConnection = new MySqlConnection(getConString());
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
@@ -373,8 +374,7 @@ namespace ProjectTemplate
             //by closing the connection and moving on
             try
             {
-                sqlCommand.ExecuteScalar();
-                int accountID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.ExecuteNonQuery();
             }
             catch (Exception e)
             {

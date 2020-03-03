@@ -1,17 +1,17 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8" />
-	<title>ASU Library</title>
-	<!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <meta charset="utf-8" />
+    <title>ASU Library</title>
+    <!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="ASUstyle.css">
 
-	<!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
-	<script type="text/javascript"> 
+    <!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
+    <script type="text/javascript">
         var books;
         var activeID;
-		
+
         function LoadBooks() {
             var webMethod = "ProjectServices.asmx/LoadBooks";
             var parameters = "{}";
@@ -30,45 +30,45 @@
                         stmt = stmt + "<input type='radio' name='book' value='" + books[i].isbn + "'>" + "<label for='" + books[i].isbn + "'>" +
                             books[i].title + " by " + books[i].author + " -- Remaining:  " + books[i].quantity + "<label><br>";
                     }
-                    document.getElementById("booklist").innerHTML = stmt;
+                    document.getElementById("booksID").innerHTML = stmt;
                 },
                 error: function (e) {
                     alert("error");
                 }
             });
-        } 
+        }
 
         function CheckoutBook() {
-        var title, isbn, days;
-        var radios = document.getElementsByName('book');
-        var id = activeID; //use global ID from session
+            var title, isbn, days;
+            var radios = document.getElementsByName('book');
+            var id = activeID; //use global ID from session
 
-        for (var i = 0, length = radios.length; i < length; i++) {
-            if (radios[i].checked) {
-                var quan = books[i].quantity;
-                if (quan < 1) {
-                    return alert("No books left!");
+            for (var i = 0, length = radios.length; i < length; i++) {
+                if (radios[i].checked) {
+                    var quan = books[i].quantity;
+                    if (quan < 1) {
+                        return alert("No books left!");
+                        break;
+                    }
+                    /*else if (id = null) {
+                        return alert("Not logged in!")
+                        break;
+                    }*/
+                    else {
+                        isbn = radios[i].value;
+                        title = books[i].title;
+                        days = books[i].rentalDays;
+                    }
+
+                    // only one radio can be logically checked, don't check the rest
                     break;
                 }
-                /*else if (id = null) {
-                    return alert("Not logged in!")
-                    break;
-                }*/
-                else {
-                    isbn = radios[i].value;
-                    title = books[i].title;
-                    days = books[i].rentalDays;
-                }
-
-                // only one radio can be logically checked, don't check the rest
-                break;
             }
-        }
-           
+
 
             var webMethod = "ProjectServices.asmx/CheckoutBook";
             var parameters = "{\"ID\":\"" + encodeURI(id) + "\", \"ISBN\":\"" +
-                             encodeURI(isbn) + "\", \"daysOut\":\"" + encodeURI(days) + "\"}";
+                encodeURI(isbn) + "\", \"daysOut\":\"" + encodeURI(days) + "\"}";
 
             //jQuery ajax method
             $.ajax({
@@ -82,13 +82,13 @@
                     LoadBooks();
                     LoadUser();
 
-                    }
+                }
                 ,
                 error: function (e) {
                     alert("error");
                 }
             });
-        } 
+        }
 
         function LogOn(userId, pass) {
             //the url of the webservice we will be talking to
@@ -121,6 +121,10 @@
                         alert("Logged in!");
                         LoadUser();
                         LoadBooks();
+                        var x = document.getElementById("buttonsID");
+                        var y = document.getElementById("Logon");
+                        x.style.display = "block";
+                        y.style.display = "none";
 
                     }
                     else {
@@ -149,7 +153,7 @@
         var admin = false;
 
         //this function grabs accounts and loads our account window
-        function LoadAccounts(ISBN, title, author, quantity) {
+        function LoadAccounts() {
 
             var webMethod = "ProjectServices.asmx/GetAccounts";
             $.ajax({
@@ -179,16 +183,19 @@
                             if (accountsArray[i].id != null) {
                                 acct = "<div class='accountRow' id='acct" + accountsArray[i].id + "'>" + "<p>" + " "
                                     + accountsArray[i].username + " " + accountsArray[i].pass + " " +
-                                    accountsArray[i].f_name + " " + accountsArray[i].l_name + "</p>"
+                                    accountsArray[i].f_name + " " + accountsArray[i].l_name + "</p></div><hr>"
                                 console.log(accountsArray[i].username)
                                 admin = true;
                             }
                             //if not, then they're not an admin so don't include the edit option
                             else {
                                 acct = "<div class='accountRow' id='acct" + accountsArray[i].id + "'>"
-                                "</a></div><hr>"
+                                "</div><hr>"
 
                             }
+
+                            
+
                             $("#accountsBox").append(
                                 //anything we throw at our panel in the form of text
                                 //will be added to the contents of that panel.  Here
@@ -198,6 +205,27 @@
                             );
                         }
 
+                        if (admin) {
+                            addNew = "<div class='accountRow' id='acct'>" + " " +
+                                "<input type='text' placeholder='ISBN #...' id='isbnID' required>" + " " +
+                                "<input type='text' placeholder='Title...' id='BookTitleID' required>" + " " +
+                                "<input type='text' placeholder='Author...' id='authorID' required>" + " " +
+                                "<input type='text' placeholder='Quantity...' id='quantityID' required>" + " " +
+                                "</div>"
+                            document.getElementById('addNew').style.display = "block";
+                        }
+                        else {
+                            alert("Not an Admin");
+                        }
+
+                        $("#accountsBox").append(
+                            //anything we throw at our panel in the form of text
+                            //will be added to the contents of that panel.  Here
+                            //we're putting together a div that holds info on the
+                            //account as well as an edit link if the user is an admin
+                            addNew
+                        );
+
                     }
 
                 },
@@ -205,9 +233,13 @@
                     alert("boo...");
                 }
             });
+        }
+
+            function addNewBook(ISBN, title, author, quantity) {
             var webMethod = "ProjectServices.asmx/AddNewBook";
             var parameters = "{\"ISBN\":\"" + encodeURI(ISBN) + "\", \"title\":\"" +
-                encodeURI(title) + "\", \"author\":\"" + encodeURI(author) + "\", \"quantity\":\"" + encodeURI(quantity) + "\"}";
+                    encodeURI(title) + "\", \"author\":\"" + encodeURI(author) + "\", \"quantity\":\"" + encodeURI(quantity) + "\"}";
+                console.log(title);
 
             //jQuery ajax method
             $.ajax({
@@ -217,27 +249,7 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function () {
-
-                    if (admin = true) {
-                        addNew = "<div class='accountRow' id='acct'>" + " " +
-                            "<input type='text' placeholder='ISBN #...' id='isbnID' required>" + " " +
-                            "<input type='text' placeholder='Title...' id='titleID' required>" + " " +
-                            "<input type='text' placeholder='Author...' id='authorID' required>" + " " +
-                            "<input type='text' placeholder='Quantity...' id='quantityID' required>" + " " +
-                            "<button class='addNew' onclick='AddNewBook(getElementById('isbnID').value, getElementById('titleID').value, getElementById('authorID').value, getElementById('quantityID').value)'>Add Book</button>" +
-                            "</div>"
-                    }
-                    else {
-                        alert("Not an Admin");
-                    }
-
-                    $("#accountsBox").append(
-                        //anything we throw at our panel in the form of text
-                        //will be added to the contents of that panel.  Here
-                        //we're putting together a div that holds info on the
-                        //account as well as an edit link if the user is an admin
-                        addNew
-                    );
+                    alert("added!");
 
                 },
                 error: function (e) {
@@ -301,7 +313,7 @@
                     alert("error");
                 }
             });
-        } 
+        }
 
         function CheckInBook() {
             var selections = document.getElementsByClassName('returnSelection');
@@ -333,13 +345,13 @@
                     });
                 }
             }
- 
-        } 
+
+        }
 
 
-	</script>
-	<!--END OF YOUR OWN JAVASCRIPT-->
-</head >
+    </script>
+    <!--END OF YOUR OWN JAVASCRIPT-->
+</head>
 <body>
     <div><h1 id="titleID">ASU Library</h1></div>
     <div class="topnav">
@@ -351,27 +363,32 @@
     <div id="searchResults" style="float: right;">
 
     </div>
-    <div id="booksID">
-        <ul id="booklist"></ul>
-    </div>
+    
     <div class="container">
-        <label for="uname"><b>Username</b></label>
-        <input type="text" placeholder="Enter Username" id="uname" required>
+        <div id="Logon">
+            <label for="uname"><b>Username</b></label>
+            <input class="log" type="text" placeholder="Enter Username" id="uname" required>
 
-        <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" id="psw" required>
+            <label for="psw"><b>Password</b></label>
+            <input class="log" type="password" placeholder="Enter Password" id="psw" required>
 
-        <button type="submit" onclick="LogOn(getElementById('uname').value, getElementById('psw').value)">Login</button>
-        <div id="rentedbooks">
-
+            <button id="LogIn" type="submit" onclick="LogOn(getElementById('uname').value, getElementById('psw').value)">Login</button>
         </div>
+        <div id="rentedbooks">
+    </div>
         <button onclick="LoadAccounts()">Admin Only</button>
-
+        <div id="booksID">
+        </div>
         <div id="buttonsID">
             <button class="buttons" onclick="CheckInBook()">Check In</button>
             <button class="buttons" onclick="CheckoutBook()">Check Out</button>
+            <div id="accountsBox"></div>
+            
         </div>
-    </div>
+        <button id='addNew' onclick="addNewBook(getElementById('isbnID').value, getElementById('BookTitleID').value, getElementById('authorID').value, getElementById('quantityID').value)">Add Book</button>
+        </div>
 
 </body>
-</html >
+
+
+</html>

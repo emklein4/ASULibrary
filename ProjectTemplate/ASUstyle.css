@@ -66,15 +66,53 @@ border: 1px solid #ccc;
 
 }
 
-#buttonsID{
- 	/*padding: 30px 30px 30px 30px;*/
- 	padding-left: 500px;
- 	padding-bottom: 30px;
-    margin-left:150px;
-    position: absolute;
-    bottom:0;
+#buttonsID {
+    /*padding: 30px 30px 30px 30px;*/
+    padding-left: 500px;
+    padding-bottom: 30px;
+    margin-left: 150px;
+    bottom: 0;
+    display: none;
+    margin: 8px 0;
+}
+
+#addNew {
+    display: none;
 }
 
 .buttons {
-	font-size: 16px;
+    background-color: maroon;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+}
+
+
+.log {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+label {
+    display: block;
+}
+
+#LogIn {
+    background-color: maroon;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+#Logon {
+    display: block;
 }
