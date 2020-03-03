@@ -173,7 +173,7 @@
                         //that we know only admins can see
                         admin = false;
 
-
+                        
                         for (var i = 0; i < accountsArray.length; i++) {
                             //we grab on to a specific html element in jQuery
                             //by using a  # followed by that element's id.
@@ -213,6 +213,8 @@
                                 "<input type='text' placeholder='Quantity...' id='quantityID' required>" + " " +
                                 "</div>"
                             document.getElementById('addNew').style.display = "block";
+
+                            
                         }
                         else {
                             alert("Not an Admin");
@@ -235,7 +237,14 @@
             });
         }
 
-            function addNewBook(ISBN, title, author, quantity) {
+        function reset() {
+            document.getElementById('isbnID').value = '';
+            document.getElementById('BookTitleID').value = '';
+            document.getElementById('authorID').value = '';
+            document.getElementById('quantityID').value = '';
+        }
+
+        function addNewBook(ISBN, title, author, quantity) {
             var webMethod = "ProjectServices.asmx/AddNewBook";
             var parameters = "{\"ISBN\":\"" + encodeURI(ISBN) + "\", \"title\":\"" +
                     encodeURI(title) + "\", \"author\":\"" + encodeURI(author) + "\", \"quantity\":\"" + encodeURI(quantity) + "\"}";
@@ -250,7 +259,8 @@
                 dataType: "json",
                 success: function () {
                     alert("added!");
-
+                    reset();
+                    LoadBooks();
                 },
                 error: function (e) {
                     alert("error");
@@ -281,6 +291,13 @@
                     stmt = stmt + "</table>";
                     document.getElementById("rentedbooks").innerHTML = stmt;
 
+                    if (activeUser.f_name == "Graylin") {
+                        document.getElementById('adminOnly').style.display = "block";
+                    }
+                    else {
+                        document.getElementById('adminOnly').style.display = "none";
+
+                    }
                 },
                 error: function (e) {
                     console.log(e.responseText);
@@ -356,14 +373,12 @@
     <div><h1 id="titleID">ASU Library</h1></div>
     <div class="topnav">
         <a class="active" href="#home">Home</a>
-        <a href="user.html">User Page</a>
-        <a href="#contact">Contact</a>
         <input type="text" id="searchbar" placeholder="Search.." onkeypress="LoadSearch(getElementById('searchbar').value)">
     </div>
     <div id="searchResults" style="float: right;">
 
     </div>
-    
+
     <div class="container">
         <div id="Logon">
             <label for="uname"><b>Username</b></label>
@@ -375,18 +390,23 @@
             <button id="LogIn" type="submit" onclick="LogOn(getElementById('uname').value, getElementById('psw').value)">Login</button>
         </div>
         <div id="rentedbooks">
-    </div>
-        <button onclick="LoadAccounts()">Admin Only</button>
+        </div>
+
         <div id="booksID">
+
         </div>
         <div id="buttonsID">
             <button class="buttons" onclick="CheckInBook()">Check In</button>
             <button class="buttons" onclick="CheckoutBook()">Check Out</button>
+            <button class="buttons" id="adminOnly" onclick="LoadAccounts()">Admin Only</button>
+
             <div id="accountsBox"></div>
-            
+            <div id="adminFunc">
+                <button id='addNew' onclick="addNewBook(getElementById('isbnID').value, getElementById('BookTitleID').value, getElementById('authorID').value, getElementById('quantityID').value)">Add Book</button>
+            </div>
         </div>
-        <button id='addNew' onclick="addNewBook(getElementById('isbnID').value, getElementById('BookTitleID').value, getElementById('authorID').value, getElementById('quantityID').value)">Add Book</button>
-        </div>
+    </div>
+    
 
 </body>
 
