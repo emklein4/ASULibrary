@@ -25,7 +25,7 @@
                 dataType: "json",
                 success: function (array) {
                     books = array.d;
-                    var stmt = '';
+                    var stmt = '<h3>Library Books</h3>';
                     for (var i = 0; i < books.length; i++) {
                         stmt = stmt + "<input type='radio' name='book' value='" + books[i].isbn + "'>" + "<label for='" + books[i].isbn + "'>" +
                             books[i].title + " by " + books[i].author + " -- Remaining:  " + books[i].quantity + "<label><br>";
@@ -375,7 +375,7 @@
         <a class="active" href="#home">Home</a>
         <input type="text" id="searchbar" placeholder="Search.." onkeypress="LoadSearch(getElementById('searchbar').value)">
     </div>
-    <div id="searchResults" style="float: right;">
+    <div id="searchResults" style="float: right; border: solid 1px maroon">
 
     </div>
 

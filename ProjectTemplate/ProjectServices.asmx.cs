@@ -395,7 +395,7 @@ namespace ProjectTemplate
             DataTable sqlDt = new DataTable("books");
             string sqlSelect = "select * from Books" +
                 " where Title like '%" + search + "%' or" +
-                " Author like '%@" + search + "%';";
+                " Author like '%" + search + "%';";
 
             MySqlConnection sqlConnection = new MySqlConnection(getConString());
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
