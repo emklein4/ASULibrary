@@ -1,69 +1,83 @@
-h1{
-	text-align: center;
-	color: maroon;
 
+body {
+    margin: 15px;
+    margin-top: 50px;
+}
+
+h1 {
+    text-align: center;
+    color: #8C1D40;
+    display: block;
+    font-size: 1.5em;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
 }
 
 /* Add a black background color to the top navigation bar */
 .topnav {
-  overflow: hidden;
-  background-color: maroon;
+    overflow: hidden;
+    background-color: #8C1D40;
 }
 
-/* Style the links inside the navigation bar */
-.topnav a {
-  float: left;
-  display: block;
-  color: gold;
-  text-align: center;
-  padding: 14px 20px;
-  text-decoration: none;
-  font-size: 17px;
-}
+    /* Style the links inside the navigation bar */
+    .topnav a {
+        float: left;
+        display: block;
+        color: gold;
+        text-align: center;
+        padding: 14px 20px;
+        text-decoration: none;
+        font-size: 17px;
+    }
 
-/* Change the color of links on hover */
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
-}
+        /* Change the color of links on hover */
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
 
-/* Style the "active" element to highlight the current page */
-.topnav a.active {
-  background-color: gold;
-  color: white;
-}
+        /* Style the "active" element to highlight the current page */
+        .topnav a.active {
+            background-color: #FFC627;
+            color: white;
+        }
 
-/* Style the search box inside the navigation bar */
-.topnav input[type=text] {
-  float: right;
-  padding: 6px;
-  border: none;
-  margin-top: 8px;
-  margin-right: 16px;
-  font-size: 17px;
-}
+    /* Style the search box inside the navigation bar */
+    .topnav input[type=text] {
+        float: right;
+        padding: 6px;
+        border: none;
+        margin-top: 8px;
+        margin-right: 16px;
+        font-size: 17px;
+    }
 
 /* When the screen is less than 600px wide, stack the links and the search field vertically instead of horizontally */
 @media screen and (max-width: 600px) {
-  .topnav a, .topnav input[type=text] {
-    float: none;
-    display: block;
-    text-align: left;
-    width: 100%;
-    margin: 0;
-    padding: 14px;
- }
+    .topnav a, .topnav input[type=text] {
+        float: none;
+        display: block;
+        text-align: left;
+        /*width: 100%;*/
+        margin: 0;
+        padding: 14px;
+    }
 
-.topnav input[type=text] {
-border: 1px solid #ccc;
+    .topnav input[type=text] {
+        border: 1px solid #ccc;
+    }
 }
 
+.entryTable {
+    padding-right: 50px;
 }
 
 
 #booksID {
-	padding-top:50px;
-
+    padding-top: 50px;
 }
 
 #buttonsID {
@@ -72,14 +86,15 @@ border: 1px solid #ccc;
     padding-bottom: 30px;
     margin-left: 150px;
     bottom: 0;
+    border:none;
     display: none;
     margin: 8px 0;
 }
 
 #addNew {
     display: none;
-  
 }
+
 #adminOnly {
     display: none;
 }
@@ -87,12 +102,11 @@ border: 1px solid #ccc;
 #adminFunc {
     /*position: absolute;
     right: 0;*/
-   
-    padding-right:5px;
+    padding-right: 5px;
 }
 
 .buttons {
-    background-color: maroon;
+    background-color: #8C1D40;
     color: white;
     padding: 14px 20px;
     margin: 8px 0;
@@ -100,31 +114,128 @@ border: 1px solid #ccc;
     cursor: pointer;
 }
 
+.logoImage {
+    padding: 30px;
+    background: rgba(0,0,0,0.25);
+    display: block;
+    max-width: 125px;
+    margin: 0;
+}
 
 .log {
-    width: 100%;
     padding: 12px 20px;
-    margin: 8px 0;
+    margin: 0 auto;
     display: inline-block;
     border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0,0,0,0.15);
     box-sizing: border-box;
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 2px solid #dddddd;
+    background: #ffffff;
+    outline: none;
+    transition: border-color 0.5s;
 }
+
+    .log:focus {
+        border-color: #8C1D40;
+    }
+
 
 label {
     display: block;
 }
 
 #LogIn {
-    background-color: maroon;
+    background-color: #8C1D40;
     color: white;
     padding: 14px 20px;
     margin: 8px 0;
     border: none;
     cursor: pointer;
     width: 100%;
+    padding: 10px;
+    color: #ffffff;
+    font-weight: bold;
+    background: #8C1D40;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 2px solid #dddddd;
+    /*padding:30px;
+    background:#eeeeee;*/
 }
 
 #Logon {
     display: block;
-    padding-top:15px;
+    box-sizing: border-box;
+    font-family: sans-seriff;
+    padding: 30px;
+    background: #eeeeee;
+    max-width: 350px;
+    width: 300px;
+    height: 450px;
+    margin: auto;
+    text-align: center;
+}
+
+.accountRow {
+    margin: auto;
+    border: 5px #8C1D40;
+}
+#acctountsBox {
+    margin: auto;
+    text-align:center;
+    border: 5px #8C1D40;
+}
+
+
+
+/*table td, th {
+    border: 1px solid black;
+
+}*/
+
+/*#labelss {
+    background-color: #FFC627;
+    color: black;
+    column-width:10px;
+}*/
+#booktable {
+    border:1px 1px;
+    border-style:solid;
+    border-collapse:collapse;
+}
+#booktable {
+    border: 1px solid black;
+    text-align:left;
+}
+#bookId {
+    width:500px;
+}
+
+.checkID {
+    width:50px;
+}
+
+.accountTable th, td{
+    width: 162px;
+    height: 20px;
+}
+.labelTable {
+    width: 680px;
+    height: 30px;
+    background-color: #FFC627;
+    text-align:center;
+}
+
+th {
+    background-color: #FFC627;
+    color: black;
 }

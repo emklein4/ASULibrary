@@ -173,17 +173,24 @@
                         //that we know only admins can see
                         admin = false;
 
+                        var labels = "<table class = 'labelTable'><th><td>" + "Username" + "</td>" + "<td>" + "Password " + "</td>" + "<td>" + "First" + "</td>" + "<td>" + "Last" + "<td>" + "</th></table>";
+                        $("#accountsBox").append(
+                            //anything we throw at our panel in the form of text
+                            //will be added to the contents of that panel.  Here
+                            //we're putting together a div that holds info on the
+                            //account as well as an edit link if the user is an admin
+                            labels
+                        );
                         
                         for (var i = 0; i < accountsArray.length; i++) {
                             //we grab on to a specific html element in jQuery
                             //by using a  # followed by that element's id.
-                            var acct;
                             //if they have access to admin-level info (like userid and password) then
                             //create output that has an edit option
                             if (accountsArray[i].id != null) {
-                                acct = "<div class='accountRow' id='acct" + accountsArray[i].id + "'>" + "<p>" + " "
-                                    + accountsArray[i].username + " " + accountsArray[i].pass + " " +
-                                    accountsArray[i].f_name + " " + accountsArray[i].l_name + "</p></div><hr>"
+                                acct = "<div class='accountRow' id='acct" + accountsArray[i].id + "'>" + " " + "<table class = 'accountTable'>"
+                                     + "<td>" + accountsArray[i].username + "</td>" + "<td>" + accountsArray[i].pass + "</td>" +
+                                     "<td>" + accountsArray[i].f_name + "</td> " + "<td>"+ accountsArray[i].l_name + "</td>"+ "</table></div>"
                                 console.log(accountsArray[i].username)
                                 admin = true;
                             }
@@ -225,6 +232,7 @@
                             //will be added to the contents of that panel.  Here
                             //we're putting together a div that holds info on the
                             //account as well as an edit link if the user is an admin
+                            "<br>" + "<br>" + "<em>Add New Book</em>" +
                             addNew
                         );
 
@@ -285,7 +293,7 @@
                     var activeUser = user.d;
                     var stmt = "<h1>" + activeUser.f_name + "'s Books</h1><table id = 'booktable'><tr><th></th> <th> Book</th> <th>Return Date</th>"
                     for (var i = 0; i < activeUser.books.length; i++) {
-                        stmt = stmt + "<tr><td><input type='checkbox' class='returnSelection' value='" + activeUser.books[i].isbn + "'></td><td>" + activeUser.books[i].title +
+                        stmt = stmt + "<tr><td class ='checkID'><input type='checkbox' class='returnSelection' value='" + activeUser.books[i].isbn + "'></td><td id ='bookId'>" + activeUser.books[i].title +
                             "</td><td>" + activeUser.books[i].returndate.replace("12:00:00 AM", "") + "</td></tr>"
                     }
                     stmt = stmt + "</table>";
@@ -325,11 +333,13 @@
                             searchbooks[i].title + " by " + searchbooks[i].author + "<label><br>";
                     }
                     document.getElementById("searchResults").innerHTML = stmt;
+                    
                 },
                 error: function (e) {
                     alert("error");
                 }
             });
+            
         }
 
         function CheckInBook() {
@@ -381,6 +391,7 @@
 
     <div class="container">
         <div id="Logon">
+            <a id="logoImage" href="https://www.pnglogos.com/logo/70796/asu-sun-devils-logo" title="ASU Sun Devils Logo" target="_blank"><img src="https://www.pnglogos.com/images/sports/asu-sun-devils-logo.png" /><br /></a>
             <label for="uname"><b>Username</b></label>
             <input class="log" type="text" placeholder="Enter Username" id="uname" required>
 
